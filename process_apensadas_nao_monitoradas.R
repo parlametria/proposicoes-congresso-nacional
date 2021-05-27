@@ -28,8 +28,6 @@ casa_proposicoes_apensadas_nao_monitoradas <- function(proposicoes_apensadas_fil
     distinct(id_senado, id_camara, .keep_all = TRUE) %>% 
     select(id_senado, id_camara, sigla_senado, sigla_camara)
   
-  #TODO:
-  # join dos dataframes de siglas camara e senado
   props_teste <- sigla_props %>% 
     rowwise(.) %>%
     mutate(
@@ -56,9 +54,6 @@ casa_proposicoes_apensadas_nao_monitoradas <- function(proposicoes_apensadas_fil
   proposicoes_apensadas <- proposicoes_apensadas_nao_monitoradas %>%
     mutate(id_ext = as.numeric(id_ext)) %>% 
     select(id_ext, casa, interesse)
-  
-  #TODO:
-  # join com csv de proposicoes apensadas para retornar nome, casa e interesses por id
   
   props_apensadas_camara <- proposicoes_apensadas %>% 
     filter(casa == 'camara') %>% 
