@@ -32,9 +32,6 @@ casa_proposicoes_apensadas_nao_monitoradas <- function(proposicoes_apensadas_fil
     mutate(id_ext = as.numeric(id_ext)) %>% 
     select(id_ext, casa, interesse)
   
-  #TODO:
-  # join com csv de proposicoes apensadas para retornar nome, casa e interesses por id
-  
   props_apensadas_camara <- proposicoes_apensadas %>% 
     filter(casa == 'camara') %>% 
     left_join(sigla_props, by = c("id_ext" = "id_camara")) %>% 
@@ -55,14 +52,14 @@ casa_proposicoes_apensadas_nao_monitoradas <- function(proposicoes_apensadas_fil
 #' @title Gera CSVs de acordo com o interesse 
 #' @description Gera CSVs de proposições apensadas de acordo com o interesse passado pelo parâmetro
 #' @param proposicoes_apensadas_filepath Caminho para o CSV de proposições apensadas não monotiradas
-#' @param interesse Nome do interesse que deseja 
+#' @param interesse_csv Nome do interesse que deseja 
 #' @param export_folder Folder para exportar CSV 
-lista_interesses <- function(proposicoes_apensadas_filepath, interesse_teste, export_folderpath){
+lista_interesses <- function(proposicoes_apensadas_filepath, interesse_csv , export_folderpath){
   
   props <- read.csv(proposicoes_apensadas_filepath)
   
   filtra_interesse <- props %>% 
-    filter(interesse==interesse_teste)
+    filter(interesse==interesse_csv)
   
   write.csv(filtra_interesse, export_folderpath)
   
