@@ -26,33 +26,8 @@ casa_proposicoes_apensadas_nao_monitoradas <- function(proposicoes_apensadas_fil
       NA_character_
     )) %>% 
     distinct(id_senado, id_camara, .keep_all = TRUE) %>% 
-    select(id_senado, id_camara, sigla_senado, sigla_camara)
-  
-  #TODO:
-  # join dos dataframes de siglas camara e senado
-  props_teste <- sigla_props %>% 
-    rowwise(.) %>%
-    mutate(
-      id_camara = ifelse(
-        !is.na(id_camara),
-        id_camara,
-        .fetch_id(
-          link_casa = NA,
-          nome = sigla,
-          casa = "camara"
-        )
-      ),
-      id_senado = ifelse(
-        !is.na(id_senado),
-        id_senado,
-        .fetch_id(
-          link_casa = NA,
-          nome = sigla,
-          casa = "senado"
-        )
-      )
-    )
-  
+    select(id_senado, id_camara, sigla_senado, sigla_camara, ano_senado, ano_camara)
+
   proposicoes_apensadas <- proposicoes_apensadas_nao_monitoradas %>%
     mutate(id_ext = as.numeric(id_ext)) %>% 
     select(id_ext, casa, interesse)
@@ -63,15 +38,17 @@ casa_proposicoes_apensadas_nao_monitoradas <- function(proposicoes_apensadas_fil
   props_apensadas_camara <- proposicoes_apensadas %>% 
     filter(casa == 'camara') %>% 
     left_join(sigla_props, by = c("id_ext" = "id_camara")) %>% 
+    rowwise(.) %>% 
+    mutate(sigla_camara = ifelse(is.na(sigla_camara), fetch_sigla(id_ext, casa), sigla_camara)) %>% 
     select(id_camara = id_ext, casa, interesse, id_senado, sigla_senado, sigla_camara)
   
   props_apensadas_senado <- proposicoes_apensadas %>% 
     filter(casa == 'senado') %>% 
     left_join(sigla_props, by = c("id_ext" = "id_senado")) %>% 
+    rowwise(.) %>% 
+    mutate(sigla_senado = ifelse(is.na(sigla_senado), fetch_sigla(id_ext, casa), sigla_senado)) %>%
     select(id_senado = id_ext, casa, interesse, id_camara, sigla_senado, sigla_camara)
   
-  #TODO:
-  # criar função que resgata sigla pelo rcongresso a partir do id (checar ano > 2019)
   
 }
 
