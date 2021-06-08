@@ -1,6 +1,6 @@
+library(tidyverse)
 library(here)
-print(dr_here())
-source(here::here("./process_apensadas_nao_monitoradas.R"))
+source(here::here("code/process_apensadas_nao_monitoradas.R"))
 
 .HELP <- "
 Usage:
@@ -20,28 +20,28 @@ get_args <- function() {
     optparse::make_option(
       c("-a", "--apensadas"),
       type = "character",
-      default = "",
+      default = here::here("data/props_apensadas_nao_monitoradas.csv"),
       help = .HELP,
       metavar = "character"
     ),
     optparse::make_option(
       c("-p", "--proposicoes"),
       type = "character",
-      default = "",
+      default = here::here("data/proposicoes_camara_senado_desde_2011.csv"),
       help = .HELP,
       metavar = "character"
     ),
     optparse::make_option(
       c("-e", "--export"),
       type = "character",
-      default = "",
+      default = here::here("data/"),
       help = .HELP,
       metavar = "character"
     ),
     optparse::make_option(
       c("-f", "--flag"),
       type = "character",
-      default = "",
+      default = "1",
       help = .HELP,
       metavar = "character"
     )
@@ -63,14 +63,14 @@ proposicoes <- args$proposicoes
 saida <- args$export
 flag <- args$flag
 
-flag_filter <- if_else(flag == 1,
+flag_filter <- if_else(flag == "1",
                        TRUE,
                        FALSE)
 print("Processando e escrevendo csvs...")
 
-process_apensadas_nao_monitoradas(proposicoes_apensadas,
-                                  proposicoes,
-                                  saida,
-                                  flag_filter)
+process_proposicoes_nao_monitoradas(proposicoes_apensadas,
+                                    proposicoes,
+                                    saida,
+                                    flag_filter)
 
 print("Salvo")
